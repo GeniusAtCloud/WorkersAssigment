@@ -27,8 +27,6 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
    ```bash
    wrangler publish
 
-##Worker Script Explanation##
-
 **Import Dependencies**
 The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
 
