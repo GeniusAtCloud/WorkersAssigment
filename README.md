@@ -12,8 +12,7 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 ## Setup
 
 1. **Clone the Repository:**
-
-   ```bash
+   bash
    git clone https://github.com/YOUR_USERNAME/WorkersAssigment.git
    cd WorkersAssigment
    
@@ -23,9 +22,8 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 3. **Deploy the Worker:**
    wrangler publish
 
-Import Dependencies
+**Import Dependencies**
 import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
-
 Event Listener for Fetch Events
 addEventListener("fetch", (event) => {
   event.respondWith(handleEvent(event));
@@ -33,11 +31,9 @@ addEventListener("fetch", (event) => {
 
 **Handling Events**
 const DEBUG = false;
-
 async function handleEvent(event) {
   const url = new URL(event.request.url);
   const pathname = url.pathname;
-
   if (pathname.startsWith("/secure")) {
     if (pathname === "/secure" || pathname === "/secure/") {
       return fetchUserInfo(event.request);
@@ -46,25 +42,20 @@ async function handleEvent(event) {
       return fetchFlag(country);
     }
   }
-
   let options = {};
-
   try {
     if (DEBUG) {
       options.cacheControl = {
         bypassCache: true,
       };
     }
-
     const page = await getAssetFromKV(event, options);
-
     const response = new Response(page.body, page);
     response.headers.set("X-XSS-Protection", "1; mode=block");
     response.headers.set("X-Content-Type-Options", "nosniff");
     response.headers.set("X-Frame-Options", "DENY");
     response.headers.set("Referrer-Policy", "unsafe-url");
     response.headers.set("Feature-Policy", "none");
-
     return response;
   } catch (e) {
     if (!DEBUG) {
@@ -73,14 +64,12 @@ async function handleEvent(event) {
           mapRequestToAsset: (req) =>
             new Request(`${new URL(req.url).origin}/404.html`, req),
         });
-
         return new Response(notFoundResponse.body, {
           ...notFoundResponse,
           status: 404,
         });
       } catch (e) {}
     }
-
     return new Response(e.message || e.toString(), { status: 500 });
   }
 }
@@ -90,7 +79,6 @@ async function fetchUserInfo(request) {
   const email = request.headers.get('cf-access-authenticated-user-email');
   const country = request.cf.country;
   const timestamp = new Date().toISOString();
-
   return new Response(`
     <!DOCTYPE html>
     <html>
@@ -137,7 +125,6 @@ async function fetchUserInfo(request) {
 **Fetch Country Flag**
 async function fetchFlag(country) {
   const flagUrl = `https://pub-a0f085f9f9a74647b5b726dd329ccbdd.r2.dev/${country.toLowerCase()}.png`;
-
   try {
     const response = await fetch(flagUrl);
     if (response.status === 200) {
