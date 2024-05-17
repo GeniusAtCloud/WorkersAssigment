@@ -18,10 +18,11 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
    cd WorkersAssigment
 
 2. **Install Dependencies**
-
+3. 
+   ```bash
    npm install
 
-3. **Deploy the Worker**
+4. **Deploy the Worker**
    Configure your wrangler.toml file and deploy the worker:
 
    wrangler publish
