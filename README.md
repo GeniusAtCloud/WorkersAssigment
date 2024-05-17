@@ -16,34 +16,38 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
    ```bash
    git clone https://github.com/YOUR_USERNAME/WorkersAssigment.git
    cd WorkersAssigment
+Install Dependencies:
 
-2. **Install Dependencies**
-   
-   ```bash
-   npm install
+bash
+Copy code
+npm install
+Deploy the Worker:
 
-4. **Deploy the Worker**
-   Configure your wrangler.toml file and deploy the worker:
+Configure your wrangler.toml file and deploy the worker:
 
-   ```bash
-   wrangler publish
+bash
+Copy code
+wrangler publish
+Worker Script Explanation
+Import Dependencies
+The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
 
-```javascript
-#Import Dependencies
-#The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
-
+javascript
+Copy code
 import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
+Event Listener for Fetch Events
+An event listener is set up to listen for fetch events. When a fetch event occurs, it calls the handleEvent function.
 
-#Event Listener for Fetch Events
-#An event listener is set up to listen for fetch events. When a fetch event occurs, it calls the handleEvent function.
-
+javascript
+Copy code
 addEventListener("fetch", (event) => {
   event.respondWith(handleEvent(event));
 });
+Handling Events
+The handleEvent function processes incoming requests, serves static assets, handles secure routes, and sets security headers.
 
-#Handling Events
-#The handleEvent function processes incoming requests, serves static assets, handles secure routes, and sets security headers.
-
+javascript
+Copy code
 const DEBUG = false;
 
 async function handleEvent(event) {
@@ -96,10 +100,11 @@ async function handleEvent(event) {
     return new Response(e.message || e.toString(), { status: 500 });
   }
 }
+Fetch User Information
+This function fetches user information from the request headers and returns an HTML response displaying the user's email, authentication time, and country flag.
 
-#Fetch User Information
-#This function fetches user information from the request headers and returns an HTML response displaying the user's email, authentication time, and country flag.
-
+javascript
+Copy code
 async function fetchUserInfo(request) {
   const email = request.headers.get('cf-access-authenticated-user-email');
   const country = request.cf.country;
@@ -137,8 +142,7 @@ async function fetchUserInfo(request) {
             <p><a href="/">Home</a></p>
           </div>
           <div>
-            <p>${email} authenticated at ${timestamp} from</p>
-            <img src="https://pub-a0f085f9f9a74647b5b726dd329ccbdd.r2.dev/${country.toLowerCase()}.png" alt="Flag" class="flag">
+            <p>${email} authenticated at ${timestamp} from <a href="/secure/${country}">${country}</a></p>
           </div>
         </div>
       </body>
@@ -147,10 +151,11 @@ async function fetchUserInfo(request) {
     headers: { 'Content-Type': 'text/html' },
   });
 }
+Fetch Country Flag
+This function attempts to fetch a country's flag image based on the provided country code and returns the image. If the flag is not found or an error occurs, appropriate error messages are returned.
 
-#Fetch Country Flag
-#This function attempts to fetch a country's flag image based on the provided country code and returns the image. If the flag is not found or an error occurs, appropriate error messages are returned.
-
+javascript
+Copy code
 async function fetchFlag(country) {
   const flagUrl = `https://pub-a0f085f9f9a74647b5b726dd329ccbdd.r2.dev/${country.toLowerCase()}.png`;
 
@@ -167,8 +172,7 @@ async function fetchFlag(country) {
     return new Response('Error fetching flag', { status: 500 });
   }
 }
-
-**Security Headers**
+Security Headers
 The worker adds the following security headers to the responses:
 
 X-XSS-Protection: 1; mode=block
@@ -176,9 +180,8 @@ X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 Referrer-Policy: unsafe-url
 Feature-Policy: none
-
-**Error Handling**
+Error Handling
 If an error occurs while serving a request, the worker attempts to serve a custom 404 page. If that also fails, it returns a 500 response with the error message.
 
-**License**
+License
 This project is licensed under the MIT License.
