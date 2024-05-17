@@ -30,37 +30,36 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 **Import Dependencies**
 The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
 
-```bash
 import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
 
 **Event Listener for Fetch Events:**
 An event listener is set up to listen for fetch events. When a fetch event occurs, it calls the handleEvent function.
 
-   addEventListener("fetch", (event) => {
-     event.respondWith(handleEvent(event));
-   });
+addEventListener("fetch", (event) => {
+  event.respondWith(handleEvent(event));
+});
 
 **Handling Events**
 The handleEvent function processes incoming requests, serves static assets, handles secure routes, and sets security headers.
 
-   const DEBUG = false;
+const DEBUG = false;
 
-    async function handleEvent(event) {
-     const url = new URL(event.request.url);
-     const pathname = url.pathname;
+async function handleEvent(event) {
+  const url = new URL(event.request.url);
+  const pathname = url.pathname;
 
-     if (pathname.startsWith("/secure")) {
-       if (pathname === "/secure" || pathname === "/secure/") {
-         return fetchUserInfo(event.request);
-       } else {
-   const country = pathname.split("/secure/")[1];
+  if (pathname.startsWith("/secure")) {
+    if (pathname === "/secure" || pathname === "/secure/") {
+      return fetchUserInfo(event.request);
+    } else {
+      const country = pathname.split("/secure/")[1];
       return fetchFlag(country);
     }
-   }
+  }
 
-     let options = {};
+  let options = {};
 
-   try {
+  try {
     if (DEBUG) {
       options.cacheControl = {
         bypassCache: true,
@@ -93,16 +92,16 @@ The handleEvent function processes incoming requests, serves static assets, hand
     }
 
     return new Response(e.message || e.toString(), { status: 500 });
-     }
-   }
+  }
+}
 
 **Fetch User Information**
 This function fetches user information from the request headers and returns an HTML response displaying the user's email, authentication time, and country flag.
 
-      async function fetchUserInfo(request) {
-      const email = request.headers.get('cf-access-authenticated-user-email');
-      const country = request.cf.country;
-      const timestamp = new Date().toISOString();
+async function fetchUserInfo(request) {
+  const email = request.headers.get('cf-access-authenticated-user-email');
+  const country = request.cf.country;
+  const timestamp = new Date().toISOString();
 
   return new Response(`
     <!DOCTYPE html>
@@ -169,11 +168,11 @@ async function fetchFlag(country) {
 ##Security Headers##
 The worker adds the following security headers to the responses:
 
-X-XSS-Protection: 1; mode=block
-X-Content-Type-Options: nosniff
-X-Frame-Options: DENY
-Referrer-Policy: unsafe-url
-Feature-Policy: none
+* X-XSS-Protection: 1; mode=block
+* X-Content-Type-Options: nosniff
+* X-Frame-Options: DENY
+* Referrer-Policy: unsafe-url
+* Feature-Policy: none
 
 ##Error Handling##
 If an error occurs while serving a request, the worker attempts to serve a custom 404 page. If that also fails, it returns a 500 response with the error message.
