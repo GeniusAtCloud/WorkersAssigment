@@ -18,18 +18,19 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
    cd WorkersAssigment
 
 2. **Install Dependencies**
-3. 
+   
    ```bash
    npm install
 
 4. **Deploy the Worker**
    Configure your wrangler.toml file and deploy the worker:
 
+   ```bash
    wrangler publish
 
 **Import Dependencies**
 The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
-
+```bash
 import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
 
 **Event Listener for Fetch Events**
