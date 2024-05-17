@@ -30,13 +30,11 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 **Import Dependencies**
 The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
 
-   ```bash
    import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
 
 **Event Listener for Fetch Events:**
 An event listener is set up to listen for fetch events. When a fetch event occurs, it calls the handleEvent function.
 
-   ```bash
    addEventListener("fetch", (event) => {
      event.respondWith(handleEvent(event));
    });
@@ -44,10 +42,9 @@ An event listener is set up to listen for fetch events. When a fetch event occur
 **Handling Events**
 The handleEvent function processes incoming requests, serves static assets, handles secure routes, and sets security headers.
 
-   ```javascript
    const DEBUG = false;
 
-   async function handleEvent(event) {
+    async function handleEvent(event) {
      const url = new URL(event.request.url);
      const pathname = url.pathname;
 
@@ -101,7 +98,6 @@ The handleEvent function processes incoming requests, serves static assets, hand
 **Fetch User Information**
 This function fetches user information from the request headers and returns an HTML response displaying the user's email, authentication time, and country flag.
 
-   ```javascript
       async function fetchUserInfo(request) {
       const email = request.headers.get('cf-access-authenticated-user-email');
       const country = request.cf.country;
@@ -148,11 +144,10 @@ This function fetches user information from the request headers and returns an H
     headers: { 'Content-Type': 'text/html' },
   });
 }
-Fetch Country Flag
+
+##Fetch Country Flag##
 This function attempts to fetch a country's flag image based on the provided country code and returns the image. If the flag is not found or an error occurs, appropriate error messages are returned.
 
-javascript
-Copy code
 async function fetchFlag(country) {
   const flagUrl = `https://pub-a0f085f9f9a74647b5b726dd329ccbdd.r2.dev/${country.toLowerCase()}.png`;
 
@@ -169,7 +164,8 @@ async function fetchFlag(country) {
     return new Response('Error fetching flag', { status: 500 });
   }
 }
-Security Headers
+
+##Security Headers##
 The worker adds the following security headers to the responses:
 
 X-XSS-Protection: 1; mode=block
@@ -177,8 +173,6 @@ X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 Referrer-Policy: unsafe-url
 Feature-Policy: none
-Error Handling
-If an error occurs while serving a request, the worker attempts to serve a custom 404 page. If that also fails, it returns a 500 response with the error message.
 
-License
-This project is licensed under the MIT License.
+##Error Handling##
+If an error occurs while serving a request, the worker attempts to serve a custom 404 page. If that also fails, it returns a 500 response with the error message.
