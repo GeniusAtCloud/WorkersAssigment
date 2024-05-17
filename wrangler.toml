@@ -1,0 +1,15 @@
+name = "worker-sites-template"
+main = "src/index.js"
+compatibility_date = "2023-01-01"
+
+[env.production]
+account_id = "2ca5206873864deb9851d911cb62c06c"
+workers_dev = true
+
+r2_buckets = [
+  { binding = "MY_BUCKET", bucket_name = "wisecloud", preview_bucket_name = "wisecloud" }
+]
+
+#routes = [
+ # { pattern = "wisecloud.stream/secure*", zone_id = "973288552" }
+#]
