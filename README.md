@@ -44,6 +44,18 @@ This function fetches user information from the request headers and returns an H
 **Fetch Country Flag**
 This function attempts to fetch a country's flag image based on the provided country code and returns the image. If the flag is not found or an error occurs, appropriate error messages are returned.
 
+**Security Headers**
+The worker adds the following security headers to the responses:
+
+* X-XSS-Protection: 1; mode=block
+* X-Content-Type-Options: nosniff
+* X-Frame-Options: DENY
+* Referrer-Policy: unsafe-url
+* Feature-Policy: none
+
+**Error Handling**
+If an error occurs while serving a request, the worker attempts to serve a custom 404 page. If that also fails, it returns a 500 response with the error message.
+
 ```bash
 import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
 
@@ -167,15 +179,3 @@ async function fetchFlag(country) {
     return new Response('Error fetching flag', { status: 500 });
   }
 }
-
-**Security Headers**
-The worker adds the following security headers to the responses:
-
-* X-XSS-Protection: 1; mode=block
-* X-Content-Type-Options: nosniff
-* X-Frame-Options: DENY
-* Referrer-Policy: unsafe-url
-* Feature-Policy: none
-
-**Error Handling**
-If an error occurs while serving a request, the worker attempts to serve a custom 404 page. If that also fails, it returns a 500 response with the error message.
