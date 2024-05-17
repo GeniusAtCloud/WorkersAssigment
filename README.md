@@ -33,6 +33,7 @@ The script imports functions from the @cloudflare/kv-asset-handler package to ma
 
 ```javascript
 import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
+<!-- End of code snippet -->
 
 **Event Listener for Fetch Events**
 An event listener is set up to listen for fetch events. When a fetch event occurs, it calls the handleEvent function.
