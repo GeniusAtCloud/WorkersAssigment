@@ -24,47 +24,47 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 
 3. **Deploy the Worker:**
 
-```bash
+   ```bash
    wrangler publish
 
-Worker Script Explanation
-Import Dependencies
+##Worker Script Explanation##
+
+**Import Dependencies**
 The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
 
-javascript
-Copy code
-import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
-Event Listener for Fetch Events
+```javascript
+   import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
+
+**Event Listener for Fetch Events**
 An event listener is set up to listen for fetch events. When a fetch event occurs, it calls the handleEvent function.
 
-javascript
-Copy code
-addEventListener("fetch", (event) => {
-  event.respondWith(handleEvent(event));
-});
-Handling Events
+```javascript
+   addEventListener("fetch", (event) => {
+     event.respondWith(handleEvent(event));
+   });
+
+**Handling Events**
 The handleEvent function processes incoming requests, serves static assets, handles secure routes, and sets security headers.
 
-javascript
-Copy code
-const DEBUG = false;
+```javascript
+   const DEBUG = false;
 
-async function handleEvent(event) {
-  const url = new URL(event.request.url);
-  const pathname = url.pathname;
+   async function handleEvent(event) {
+     const url = new URL(event.request.url);
+     const pathname = url.pathname;
 
-  if (pathname.startsWith("/secure")) {
-    if (pathname === "/secure" || pathname === "/secure/") {
-      return fetchUserInfo(event.request);
-    } else {
-      const country = pathname.split("/secure/")[1];
+     if (pathname.startsWith("/secure")) {
+       if (pathname === "/secure" || pathname === "/secure/") {
+         return fetchUserInfo(event.request);
+       } else {
+   const country = pathname.split("/secure/")[1];
       return fetchFlag(country);
     }
-  }
+   }
 
-  let options = {};
+     let options = {};
 
-  try {
+   try {
     if (DEBUG) {
       options.cacheControl = {
         bypassCache: true,
@@ -97,9 +97,10 @@ async function handleEvent(event) {
     }
 
     return new Response(e.message || e.toString(), { status: 500 });
-  }
-}
-Fetch User Information
+     }
+   }
+
+**Fetch User Information**
 This function fetches user information from the request headers and returns an HTML response displaying the user's email, authentication time, and country flag.
 
 javascript
