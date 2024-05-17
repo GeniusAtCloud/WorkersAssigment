@@ -20,12 +20,12 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 2. **Install Dependencies:**
 
 ```bash
-npm install
+   npm install
 
 3. **Deploy the Worker:**
 
 ```bash
-wrangler publish
+   wrangler publish
 
 Worker Script Explanation
 Import Dependencies
