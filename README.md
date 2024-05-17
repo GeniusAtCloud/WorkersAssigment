@@ -29,7 +29,7 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
    wrangler publish
 
 ```javascript
-#Import Dependencies
+##Import Dependencies
 The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
 
 import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
