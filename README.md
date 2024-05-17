@@ -30,12 +30,14 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 
 **Import Dependencies**
 The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
-```bash
+
+```javascript
 import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
 
 **Event Listener for Fetch Events**
 An event listener is set up to listen for fetch events. When a fetch event occurs, it calls the handleEvent function.
 
+```javascript
 addEventListener("fetch", (event) => {
   event.respondWith(handleEvent(event));
 });
@@ -43,6 +45,7 @@ addEventListener("fetch", (event) => {
 **Handling Events**
 The handleEvent function processes incoming requests, serves static assets, handles secure routes, and sets security headers.
 
+```javascript
 const DEBUG = false;
 
 async function handleEvent(event) {
@@ -99,6 +102,7 @@ async function handleEvent(event) {
 **Fetch User Information**
 This function fetches user information from the request headers and returns an HTML response displaying the user's email, authentication time, and country flag.
 
+```javascript
 async function fetchUserInfo(request) {
   const email = request.headers.get('cf-access-authenticated-user-email');
   const country = request.cf.country;
@@ -150,6 +154,7 @@ async function fetchUserInfo(request) {
 **Fetch Country Flag**
 This function attempts to fetch a country's flag image based on the provided country code and returns the image. If the flag is not found or an error occurs, appropriate error messages are returned.
 
+```javascript
 async function fetchFlag(country) {
   const flagUrl = `https://pub-a0f085f9f9a74647b5b726dd329ccbdd.r2.dev/${country.toLowerCase()}.png`;
 
