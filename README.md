@@ -19,7 +19,7 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 
 2. **Install Dependencies:**
 
-```bash
+   ```bash
    npm install
 
 3. **Deploy the Worker:**
