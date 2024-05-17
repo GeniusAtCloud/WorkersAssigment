@@ -12,28 +12,48 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 ## Setup
 
 1. **Clone the Repository:**
-   bash
+
+   ```bash
    git clone https://github.com/YOUR_USERNAME/WorkersAssigment.git
    cd WorkersAssigment
-   
-2. **Install Dependencies:**
-   npm install
+Install Dependencies:
 
-3. **Deploy the Worker:**
-   wrangler publish
+bash
+Copy code
+npm install
+Deploy the Worker:
 
-**Import Dependencies**
+Configure your wrangler.toml file and deploy the worker:
+
+bash
+Copy code
+wrangler publish
+Worker Script Explanation
+Import Dependencies
+The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
+
+javascript
+Copy code
 import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
 Event Listener for Fetch Events
+An event listener is set up to listen for fetch events. When a fetch event occurs, it calls the handleEvent function.
+
+javascript
+Copy code
 addEventListener("fetch", (event) => {
   event.respondWith(handleEvent(event));
 });
+Handling Events
+The handleEvent function processes incoming requests, serves static assets, handles secure routes, and sets security headers.
 
-**Handling Events**
+javascript
+Copy code
 const DEBUG = false;
+
 async function handleEvent(event) {
   const url = new URL(event.request.url);
   const pathname = url.pathname;
+
   if (pathname.startsWith("/secure")) {
     if (pathname === "/secure" || pathname === "/secure/") {
       return fetchUserInfo(event.request);
@@ -42,20 +62,25 @@ async function handleEvent(event) {
       return fetchFlag(country);
     }
   }
+
   let options = {};
+
   try {
     if (DEBUG) {
       options.cacheControl = {
         bypassCache: true,
       };
     }
+
     const page = await getAssetFromKV(event, options);
+
     const response = new Response(page.body, page);
     response.headers.set("X-XSS-Protection", "1; mode=block");
     response.headers.set("X-Content-Type-Options", "nosniff");
     response.headers.set("X-Frame-Options", "DENY");
     response.headers.set("Referrer-Policy", "unsafe-url");
     response.headers.set("Feature-Policy", "none");
+
     return response;
   } catch (e) {
     if (!DEBUG) {
@@ -64,21 +89,27 @@ async function handleEvent(event) {
           mapRequestToAsset: (req) =>
             new Request(`${new URL(req.url).origin}/404.html`, req),
         });
+
         return new Response(notFoundResponse.body, {
           ...notFoundResponse,
           status: 404,
         });
       } catch (e) {}
     }
+
     return new Response(e.message || e.toString(), { status: 500 });
   }
 }
+Fetch User Information
+This function fetches user information from the request headers and returns an HTML response displaying the user's email, authentication time, and country flag.
 
-**Fetch User Information**
+javascript
+Copy code
 async function fetchUserInfo(request) {
   const email = request.headers.get('cf-access-authenticated-user-email');
   const country = request.cf.country;
   const timestamp = new Date().toISOString();
+
   return new Response(`
     <!DOCTYPE html>
     <html>
@@ -121,10 +152,14 @@ async function fetchUserInfo(request) {
     headers: { 'Content-Type': 'text/html' },
   });
 }
+Fetch Country Flag
+This function attempts to fetch a country's flag image based on the provided country code and returns the image. If the flag is not found or an error occurs, appropriate error messages are returned.
 
-**Fetch Country Flag**
+javascript
+Copy code
 async function fetchFlag(country) {
   const flagUrl = `https://pub-a0f085f9f9a74647b5b726dd329ccbdd.r2.dev/${country.toLowerCase()}.png`;
+
   try {
     const response = await fetch(flagUrl);
     if (response.status === 200) {
@@ -138,8 +173,7 @@ async function fetchFlag(country) {
     return new Response('Error fetching flag', { status: 500 });
   }
 }
-
-**Security Headers**
+Security Headers
 The worker adds the following security headers to the responses:
 
 X-XSS-Protection: 1; mode=block
@@ -147,11 +181,8 @@ X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 Referrer-Policy: unsafe-url
 Feature-Policy: none
-
-**Error Handling**
+Error Handling
 If an error occurs while serving a request, the worker attempts to serve a custom 404 page. If that also fails, it returns a 500 response with the error message.
 
-**License**
+License
 This project is licensed under the MIT License.
-
-This README.md file explains the purpose of the Cloudflare Worker script, how to set it up, and provides a detailed explanation of the code and its features.
