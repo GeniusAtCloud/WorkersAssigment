@@ -30,7 +30,7 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 **Import Dependencies**
 The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
 
-   ```bash
+   ```javascript
    import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
 
 **Event Listener for Fetch Events:**
