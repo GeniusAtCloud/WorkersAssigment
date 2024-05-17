@@ -30,13 +30,13 @@ This Cloudflare Worker script serves static assets from Cloudflare KV storage an
 **Import Dependencies**
 The script imports functions from the @cloudflare/kv-asset-handler package to manage serving static assets from Cloudflare KV storage.
 
-```bash
+   ```bash
    import { getAssetFromKV, mapRequestToAsset } from "@cloudflare/kv-asset-handler";
 
 **Event Listener for Fetch Events:**
 An event listener is set up to listen for fetch events. When a fetch event occurs, it calls the handleEvent function.
 
-```javascript
+   ```javascript
    addEventListener("fetch", (event) => {
      event.respondWith(handleEvent(event));
    });
@@ -44,7 +44,7 @@ An event listener is set up to listen for fetch events. When a fetch event occur
 **Handling Events**
 The handleEvent function processes incoming requests, serves static assets, handles secure routes, and sets security headers.
 
-```javascript
+   ```javascript
    const DEBUG = false;
 
    async function handleEvent(event) {
@@ -101,12 +101,11 @@ The handleEvent function processes incoming requests, serves static assets, hand
 **Fetch User Information**
 This function fetches user information from the request headers and returns an HTML response displaying the user's email, authentication time, and country flag.
 
-javascript
-Copy code
-async function fetchUserInfo(request) {
-  const email = request.headers.get('cf-access-authenticated-user-email');
-  const country = request.cf.country;
-  const timestamp = new Date().toISOString();
+   ```javascript
+      async function fetchUserInfo(request) {
+      const email = request.headers.get('cf-access-authenticated-user-email');
+      const country = request.cf.country;
+      const timestamp = new Date().toISOString();
 
   return new Response(`
     <!DOCTYPE html>
